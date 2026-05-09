@@ -10,9 +10,6 @@
 <input type="radio" name="q1" value="a"> 3 <br>
 <input type="radio" name="q1" value="b"> 4 <br>
 </form>
-<br>
-<button type="button" onclick="submitExam()">Submit</button>
-
 <h2>Online Exam</h2>
 
 <p id="timer">Time: 10:00</p>

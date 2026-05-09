@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Exam System</title>
+</head>
+<body>
+
+<h2>Register / Login</h2>
+
+<div id="auth">
+  <input type="text" id="regName" placeholder="Name"><br><br>
+  <input type="text" id="regUser" placeholder="Username"><br><br>
+  <input type="password" id="regPass" placeholder="Password"><br><br>
+
+  <button onclick="register()">Register</button>
+  <button onclick="login()">Login</button>
+
+  <p id="msg"></p>
+</div>
+
+<hr>
+
+<div id="exam" style="display:none;">
+
+<h3>Welcome, <span id="userShow"></span></h3>
+
+<p id="timer">Time: 10:00</p>
+
+<p>1. 2 + 2 = ?</p>
+<input type="radio" name="q1" value="a"> 3 <br>
+<input type="radio" name="q1" value="b"> 4 <br><br>
+
+<button onclick="submitExam()">Submit Exam</button>
+
+<h3 id="result"></h3>
+
+</div>
+
+<script>
+let users = {};
+let currentUser = "";
+let time = 600;
+let interval;
+
+// REGISTER
+function register(){
+  let name = document.getElementById("regName").value;
+  let user = document.getElementById("regUser").value;
+  let pass = document.getElementById("regPass").value;
+
+  users[user] = {name:name, pass:pass};
+
+  document.getElementById("msg").innerText = "Registered Successfully!";
+}
+
+// LOGIN
+function login(){
+  let user = document.getElementById("regUser").value;
+  let pass = document.getElementById("regPass").value;
+
+  if(users[user] && users[user].pass === pass){
+    currentUser = user;
+
+    document.getElementById("auth").style.display = "none";
+    document.getElementById("exam").style.display = "block";
+
+    document.getElementById("userShow").innerText = users[user].name;
+
+    startTimer();
+  } else {
+    document.getElementById("msg").innerText = "Wrong login!";
+  }
+}
+
+// TIMER
+function startTimer(){
+  interval = setInterval(function(){
+    let m = Math.floor(time/60);
+    let s = time%60;
+
+    document.getElementById("timer").innerHTML =
+    "Time: " + m + ":" + (s<10?"0":"") + s;
+
+    time--;
+
+    if(time < 0){
+      submitExam();
+    }
+
+  },1000);
+}
+
+// SUBMIT
+function submitExam(){
+  clearInterval(interval);
+
+  let score = 0;
+
+  let ans = document.querySelector('input[name="q1"]:checked');
+
+  if(ans && ans.value == "b"){
+    score++;
+  }
+
+  let name = users[currentUser].name;
+
+  document.getElementById("result").innerHTML =
+  "Name: " + name + "<br>Score: " + score + "/1";
+}
+</script>
+
+</body>
+</html>

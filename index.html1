@@ -4,6 +4,12 @@
   <title>Exam System</title>
 </head>
 <body>
+<form id="examForm">
+<p>1. 2 + 2 = ?</p>
+
+<input type="radio" name="q1" value="a"> 3 <br>
+<input type="radio" name="q1" value="b"> 4 <br>
+</form>
 
 <h2>Online Exam</h2>
 

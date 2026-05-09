@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pro MCQ Exam System</title>
+  <style>
+    body { font-family: Arial; background:#eef1f6; text-align:center; }
+    .box { background:white; width:360px; margin:20px auto; padding:20px; border-radius:12px; box-shadow:0 0 10px #ccc; }
+    button { width:90%; padding:10px; margin:5px; cursor:pointer; }
+    input { width:90%; padding:8px; margin:5px; }
+    .hidden { display:none; }
+    #bar { height:10px; background:green; width:0%; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="box" id="loginBox">
+  <h2>Login</h2>
+  <input id="user" placeholder="Username">
+  <input id="pass" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- ADMIN -->
+<div class="box hidden" id="adminBox">
+  <h3>Admin Panel 🧠</h3>
+
+  <input id="q" placeholder="Question">
+  <input id="a1" placeholder="Option 1">
+  <input id="a2" placeholder="Option 2">
+  <input id="a3" placeholder="Option 3">
+  <input id="a4" placeholder="Option 4">
+  <input id="ans" placeholder="Correct Answer (0-3)">
+
+  <button onclick="addQ()">Add Question</button>
+  <button onclick="startExam()">Start Exam</button>
+</div>
+
+<!-- QUIZ -->
+<div class="box hidden" id="quizBox">
+  <h3 id="welcome"></h3>
+
+  <div id="bar"></div>
+
+  <p>⏱ Time: <span id="time">15</span></p>
+
+  <h4 id="question"></h4>
+
+  <button onclick="answer(0)" id="o0"></button>
+  <button onclick="answer(1)" id="o1"></button>
+  <button onclick="answer(2)" id="o2"></button>
+  <button onclick="answer(3)" id="o3"></button>
+</div>
+
+<!-- RESULT -->
+<div class="box hidden" id="resultBox">
+  <h2>Result</h2>
+  <p id="resultText"></p>
+  <button onclick="location.reload()">Restart</button>
+</div>
+
+<!-- LEADERBOARD -->
+<div class="box">
+  <h3>🏆 Leaderboard</h3>
+  <div id="board"></div>
+</div>
+
+<script>
+let user="";
+let index=0;
+let score=0;
+let time=15;
+let timer;
+
+let questions = JSON.parse(localStorage.getItem("qBank")) || [];
+
+function login(){
+  user = document.getElementById("user").value;
+  let pass = document.getElementById("pass").value;
+
+  if(user && pass){
+    document.getElementById("loginBox").classList.add("hidden");
+
+    if(user === "admin"){
+      document.getElementById("adminBox").classList.remove("hidden");
+    } else {
+      startExam();
+    }
+  }
+}
+
+function addQ(){
+  let q = {
+    q: document.getElementById("q").value,
+    opt:[

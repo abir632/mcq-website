@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Exam</title>
+</head>
+<body>
+
+<h2>Online Exam</h2>
+
+<p id="timer">Time: 10:00</p>
+
+<p>1. 2 + 2 = ?</p>
+
+<input type="radio" name="q1" value="a"> 3 <br>
+<input type="radio" name="q1" value="b"> 4 <br>
+
+<br>
+
+<button onclick="submitExam()">Submit</button>
+
+<h3 id="result"></h3>
+
+<script>
+let time = 600;
+
+let interval = setInterval(function(){
+  let m = Math.floor(time/60);
+  let s = time%60;
+
+  document.getElementById("timer").innerHTML =
+  "Time: " + m + ":" + (s<10?"0":"") + s;
+
+  time--;
+
+  if(time < 0){
+    submitExam();
+  }
+
+},1000);
+
+function submitExam(){
+  clearInterval(interval);
+
+  let score = 0;
+
+  let ans = document.querySelector('input[name="q1"]:checked');
+
+  if(ans && ans.value == "b"){
+    score++;
+  }
+
+  document.getElementById("result").innerHTML =
+  "Your Score: " + score + "/1";
+}
+</script>
+
+</body>
+</html>

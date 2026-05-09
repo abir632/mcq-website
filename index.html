@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MCQ Test System</title>
+  <style>
+    body { font-family: Arial; text-align:center; background:#f2f2f2; }
+    .box { background:white; padding:20px; width:300px; margin:50px auto; border-radius:10px; }
+    button { padding:10px; margin-top:10px; cursor:pointer; }
+    .hidden { display:none; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="box" id="loginBox">
+  <h2>Login</h2>
+  <input id="user" placeholder="Username"><br><br>
+  <input id="pass" type="password" placeholder="Password"><br><br>
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- QUIZ -->
+<div class="box hidden" id="quizBox">
+  <h3>MCQ Test</h3>
+  <p>Time Left: <span id="time">30</span> sec</p>
+
+  <p id="question"></p>
+
+  <button onclick="answer(0)" id="opt0"></button><br>
+  <button onclick="answer(1)" id="opt1"></button><br>
+  <button onclick="answer(2)" id="opt2"></button><br>
+  <button onclick="answer(3)" id="opt3"></button><br>
+</div>
+
+<!-- RESULT -->
+<div class="box hidden" id="resultBox">
+  <h2>Result</h2>
+  <p id="scoreText"></p>
+</div>
+
+<script>
+let questions = [
+  {
+    q: "What is 2 + 2?",
+    options: ["3","4","5","6"],
+    answer: 1
+  },
+  {
+    q: "Capital of Bangladesh?",
+    options: ["Dhaka","Chittagong","Khulna","Rajshahi"],
+    answer: 0
+  }
+];
+
+let index = 0;
+let score = 0;
+let time = 30;
+let timer;
+
+function login(){
+  let u = document.getElementById("user").value;
+  let p = document.getElementById("pass").value;
+
+  if(u && p){
+    document.getElementById("loginBox").classList.add("hidden");
+    document.getElementById("quizBox").classList.remove("hidden");
+    loadQuestion();
+    startTimer();
+  } else {
+    alert("Enter username & password");
+  }
+}
+
+function loadQuestion(){
+  let q = questions[index];
+  document.getElementById("question").innerText = q.q;
+
+  for(let i=0;i<4;i++){
+    document.getElementById("opt0").innerText = questions[index].options[0];
+    document.getElementById("opt1").innerText = questions[index].options[1];
+    document.getElementById("opt2").innerText = questions[index].options[2];
+    document.getElementById("opt3").innerText = questions[index].options[3];
+  }
+}
+
+function answer(i){
+  if(i === questions[index].answer){
+    score++;
+  }
+
+  index++;
+
+  if(index < questions.length){
+    loadQuestion();
+  } else {
+    endTest();
+  }
+}
+
+function startTimer(){
+  timer = setInterval(()=>{
+    time--;
+    document.getElementById("time").innerText = time;
+
+    if(time <= 0){
+      endTest();
+    }
+  },1000);
+}
+
+function endTest(){
+  clearInterval(timer);
+
+  document.getElementById("quizBox").classList.add("hidden");
+  document.getElementById("resultBox").classList.remove("hidden");
+
+  document.getElementById("scoreText").innerText =
+    "Your Score: " + score + " / " + questions.length;
+}
+</script>
+
+</body>
+</html>

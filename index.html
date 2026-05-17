@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCQ Exam Portal</title>
+<style>
+body{font-family:Arial;background:#f2f2f2;padding:20px}
+.container{max-width:500px;margin:auto;background:white;padding:20px;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.1)}
+input,button{width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc}
+button{background:#2563eb;color:white;border:none}
+</style>
+</head>
+<body>
+<div class="container" id="app">
+<h2>MCQ Practice Website</h2><p>Login করে exam start করো</p>
+<input type="text" id="username" placeholder="Enter username">
+<input type="password" id="password" placeholder="Enter password">
+<button onclick="login()">Login</button>
+</div><script>
+const correctPassword = '1234';
+const quiz = [
+ {question:'What is 5+5?',options:['8','10','12','15'],answer:'10'},
+ {question:'Capital of Bangladesh?',options:['Dhaka','Rajshahi','Khulna','Sylhet'],answer:'Dhaka'},
+ {question:'HTML stands for?',options:['Hyper Text Markup Language','Home Tool Markup Language','Hyperlinks Text','None'],answer:'Hyper Text Markup Language'}
+];
+
+let current=0,score=0,time=60;
+let username='';
+
+function login(){
+ username=document.getElementById('username').value;
+ const password=document.getElementById('password').value;
+ if(password===correctPassword && username!=''){
+   startQuiz();
+ } else {
+   alert('Wrong password or username empty');
+ }
+}
+
+function startQuiz(){
+ document.getElementById('app').innerHTML=`<h2>Welcome ${username}</h2><p>Time Left: <span id='timer'>60</span>s</p><p id='question'></p><div id='options'></div>`;
+ loadQuestion();
+ startTimer();
+}
+
+function loadQuestion(){
+ if(current>=quiz.length){finishQuiz();return;}
+ document.getElementById('question').innerText=quiz[current].question;
+ const optionsDiv=document.getElementById('options');
+ optionsDiv.innerHTML='';
+ quiz[current].options.forEach(option=>{
+   let btn=document.createElement('button');
+   btn.innerText=option;
+   btn.onclick=()=>checkAnswer(option);
+   optionsDiv.appendChild(btn);
+ });
+}
+
+function checkAnswer(selected){
+ if(selected===quiz[current].answer){score++;}
+ current++;
+ loadQuestion();
+}
+
+function startTimer(){
+ let timer=setInterval(()=>{
+   time--;
+   document.getElementById('timer').innerText=time;
+   if(time<=0){clearInterval(timer);finishQuiz();}
+ },1000);
+}
+
+function finishQuiz(){
+ let leaderboard=JSON.parse(localStorage.getItem('leaderboard'))||[];
+ leaderboard.push({name:username,score:score});
+ localStorage.setItem('leaderboard',JSON.stringify(leaderboard));
+ 
+ let boardHTML='<h3>Leaderboard</h3>';
+ leaderboard.sort((a,b)=>b.score-a.score);
+ leaderboard.forEach(user=>{
+   boardHTML+=`<p>${user.name}: ${user.score}</p>`;
+ });
+ 
+ document.getElementById('app').innerHTML=`<h2>Exam Finished</h2><p>Your Score: ${score}/${quiz.length}</p>${boardHTML}`;
+}
+</script></body>
+</html>
